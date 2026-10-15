@@ -5,7 +5,7 @@ import { fetchJson } from "./fetch-json.js";
 import { AGENT_INTENT, DISCOVERY_TIMEOUT_MS, IDE_NAME, IDE_TYPE, IDE_VERSION, APP_VERSION, ENV_ID, PRODUCT } from "./config.js";
 
 export interface RemoteModel { id:string; name:string; maxInputTokens?:number; maxOutputTokens?:number; maxAllowedSize?:number; supportsToolCall?:boolean; supportsImages?:boolean; supportsReasoning?:boolean; disabledMultimodal?:boolean; reasoning?:{ effort?:string; defaultEffort?:string; supportedEfforts?:string[] }; }
-export const DEFAULT_MODEL: RemoteModel = { id:"auto", name:"Auto", maxInputTokens:168000, maxOutputTokens:32000, supportsToolCall:true };
+export const DEFAULT_MODEL: RemoteModel = { id:"auto", name:"Auto", maxInputTokens:168000, maxOutputTokens:32000, supportsToolCall:true, supportsImages:true };
 
 export interface PiModelConfig {
   id: string;
@@ -78,7 +78,7 @@ export function remoteModelToPi(m: RemoteModel): PiModelConfig {
     id: m.id,
     name: m.name,
     reasoning: m.supportsReasoning !== false && detectThinking(m.id),
-    input: (detectImages(m.id) && !m.disabledMultimodal) ? ["text", "image"] : ["text"],
+    input: ((m.supportsImages ?? detectImages(m.id)) && !m.disabledMultimodal) ? ["text", "image"] : ["text"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
     contextWindow,
     maxTokens,

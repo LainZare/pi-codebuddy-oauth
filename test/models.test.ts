@@ -35,6 +35,20 @@ describe("models (pi)", () => {
     const p = remoteModelToPi({ id: "claude-x", name: "X", supportsImages: true, disabledMultimodal: true });
     expect(p.input).toEqual(["text"]);
   });
+  it("supportsImages: true 即使非 claude/gpt/gemini 也开启图片输入", () => {
+    const p = remoteModelToPi({ id: "hy4-preview", name: "Hy4", supportsImages: true });
+    expect(p.input).toEqual(["text", "image"]);
+  });
+  it("supportsImages: false 即使命中正则也关闭图片输入", () => {
+    const p = remoteModelToPi({ id: "claude-x", name: "Claude", supportsImages: false });
+    expect(p.input).toEqual(["text"]);
+  });
+  it("supportsImages 缺省时回退到正则猜测", () => {
+    const p1 = remoteModelToPi({ id: "gpt-4o", name: "GPT-4o" });
+    expect(p1.input).toEqual(["text", "image"]);
+    const p2 = remoteModelToPi({ id: "plain-model", name: "Plain" });
+    expect(p2.input).toEqual(["text"]);
+  });
   it("reasoning 模型强制 system 角色（CodeBuddy 拒绝 developer → 400）", () => {
     const p = remoteModelToPi({ id: "claude-x", name: "X", supportsReasoning: true });
     expect(p.compat?.supportsDeveloperRole).toBe(false);
@@ -56,11 +70,12 @@ describe("models (pi)", () => {
     expect(p.reasoning).toBe(false);
     expect(p.thinkingLevelMap).toBeUndefined();
   });
-  it("DEFAULT_MODEL 具备最小可用字段", () => {
+  it("DEFAULT_MODEL 具备最小可用字段且支持图片", () => {
     const p = remoteModelToPi(DEFAULT_MODEL);
     expect(p.id).toBe("auto");
     expect(p.contextWindow).toBe(168000);
     expect(p.maxTokens).toBe(32000);
+    expect(p.input).toEqual(["text", "image"]);
   });
 });
 
