@@ -3,6 +3,17 @@
 [![npm version](https://img.shields.io/npm/v/pi-codebuddy-oauth.svg)](https://www.npmjs.com/package/pi-codebuddy-oauth)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+> **分支说明**
+>
+> 本仓库基于 [SoulChildTc/pi-codebuddy-oauth](https://github.com/SoulChildTc/pi-codebuddy-oauth) 维护，合并了来自 [bjstan1979/pi-codebuddy-oauth](https://github.com/bjstan1979/pi-codebuddy-oauth) 的多项稳定性修复，并补充了对远端支持图片输入的模型自动声明多模态能力（`input: ["text", "image"]`）。
+>
+> **在 Pi 中安装本分支：**
+> ```bash
+> pi install git:github.com/LainZare/pi-codebuddy-oauth@dev
+> ```
+
+---
+
 为 [CodeBuddy](https://www.codebuddy.cn)（腾讯 IOA 编程助手）提供 [Pi](https://github.com/earendil-works/pi) 扩展，把 CodeBuddy 作为 **OpenAI 兼容 HTTP provider** 接入 Pi。
 
 与 [pi-codebuddy-sdk](https://github.com/RealAlexandreAI/pi-codebuddy-sdk)（spawn `codebuddy` CLI 子进程 + MCP bridge）不同，本扩展走**轻量 HTTP 直连**（`/v2/chat/completions`）：协议栈复用 pi-ai 内置 `openai-completions`，扩展只负责鉴权、模型发现、动态头注入与瞬时故障重试。无 CLI 依赖、无子进程、无会话文件管理。
